@@ -3,26 +3,37 @@
 import PrivateRoute from '@/components/PrivateRoute';
 import { useAuth } from '@/context/AuthContext';
 import { logoutUser } from '@/services/authService';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
 	const { user } = useAuth();
+	const { theme, setTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+
+	// After mounting, we have access to the theme
+	useEffect(() => setMounted(true), []);
+
+	const toggleTheme = () => {
+		setTheme(theme === 'dark' ? 'light' : 'dark');
+	};
 
 	return (
 		<PrivateRoute>
-			<div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+			<div className='min-h-screen bg-[var(--background)] text-[var(--foreground)]'>
 				{/* Header */}
-				<div className='bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700'>
+				<div className='bg-[var(--card-bg)] border-b border-[var(--card-border)]'>
 					<div className='max-w-4xl mx-auto px-4 py-4'>
 						<div className='flex items-center justify-between'>
 							<Link
 								href='/chat'
-								className='flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors'
+								className='flex items-center space-x-2 text-[var(--button-text)] hover:text-[var(--foreground)] transition-colors'
 							>
 								<span>←</span>
 								<span>Назад к чату</span>
 							</Link>
-							<h1 className='text-xl font-semibold text-gray-900 dark:text-white'>
+							<h1 className='text-xl font-semibold text-[var(--foreground)]'>
 								Профиль
 							</h1>
 							<div className='w-20'></div> {/* Spacer for centering */}
@@ -31,18 +42,20 @@ export default function ProfilePage() {
 				</div>
 
 				{/* Profile Content */}
-				<div className='max-w-2xl mx-auto px-4 py-8'>
-					<div className='bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden'>
+				<div className='max-w-4xl mx-auto px-4 py-8'>
+					<div className='bg-[var(--card-bg)] rounded-xl shadow-lg overflow-hidden border border-[var(--card-border)]'>
 						{/* Profile Header */}
-						<div className='bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-8'>
+						<div className='bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] px-6 py-8'>
 							<div className='flex items-center space-x-4'>
-								<div className='w-20 h-20 bg-white rounded-full flex items-center justify-center text-3xl shadow-lg'>
-									{user?.photoURL}
+								<div className='w-20 h-20 bg-[var(--card-bg)] rounded-full flex items-center justify-center text-3xl shadow-lg'>
+									👤
 								</div>
-								<div className='text-white'>
+								<div className='text-[var(--primary-text)]'>
 									<h2 className='text-2xl font-bold'>{user?.displayName}</h2>
-									<p className='text-indigo-100'>{user?.email}</p>
-									<p className='text-indigo-200 text-sm mt-1'>
+									<p className='text-[var(--primary-text)] opacity-80'>
+										{user?.email}
+									</p>
+									<p className='text-[var(--primary-text)] opacity-60 text-sm mt-1'>
 										С нами с {user?.metadata.creationTime}
 									</p>
 								</div>
@@ -52,58 +65,58 @@ export default function ProfilePage() {
 						{/* Profile Details */}
 						<div className='p-6 space-y-6'>
 							<div>
-								<h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+								<h3 className='text-lg font-semibold text-[var(--foreground)] mb-4'>
 									Информация о профиле
 								</h3>
 
 								<div className='space-y-4'>
-									<div className='flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
+									<div className='flex items-center justify-between py-3 px-4 bg-[var(--button-bg)] rounded-lg'>
 										<div className='flex items-center space-x-3'>
 											<span className='text-lg'>👤</span>
 											<div>
-												<p className='text-sm font-medium text-gray-900 dark:text-white'>
+												<p className='text-sm font-medium text-[var(--foreground)]'>
 													Полное имя
 												</p>
-												<p className='text-sm text-gray-500 dark:text-gray-400'>
+												<p className='text-sm text-[var(--button-text)]'>
 													{user?.displayName}
 												</p>
 											</div>
 										</div>
-										<button className='text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 text-sm'>
+										<button className='text-[var(--primary)] hover:text-[var(--primary-hover)] text-sm'>
 											Изменить
 										</button>
 									</div>
 
-									<div className='flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
+									<div className='flex items-center justify-between py-3 px-4 bg-[var(--button-bg)] rounded-lg'>
 										<div className='flex items-center space-x-3'>
 											<span className='text-lg'>📧</span>
 											<div>
-												<p className='text-sm font-medium text-gray-900 dark:text-white'>
+												<p className='text-sm font-medium text-[var(--foreground)]'>
 													Email
 												</p>
-												<p className='text-sm text-gray-500 dark:text-gray-400'>
+												<p className='text-sm text-[var(--button-text)]'>
 													{user?.email}
 												</p>
 											</div>
 										</div>
-										<button className='text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 text-sm'>
+										<button className='text-[var(--primary)] hover:text-[var(--primary-hover)] text-sm'>
 											Изменить
 										</button>
 									</div>
 
-									<div className='flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
+									<div className='flex items-center justify-between py-3 px-4 bg-[var(--button-bg)] rounded-lg'>
 										<div className='flex items-center space-x-3'>
 											<span className='text-lg'>🔒</span>
 											<div>
-												<p className='text-sm font-medium text-gray-900 dark:text-white'>
+												<p className='text-sm font-medium text-[var(--foreground)]'>
 													Пароль
 												</p>
-												<p className='text-sm text-gray-500 dark:text-gray-400'>
+												<p className='text-sm text-[var(--button-text)]'>
 													••••••••
 												</p>
 											</div>
 										</div>
-										<button className='text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 text-sm'>
+										<button className='text-[var(--primary)] hover:text-[var(--primary-hover)] text-sm'>
 											Изменить
 										</button>
 									</div>
@@ -112,51 +125,44 @@ export default function ProfilePage() {
 
 							{/* Settings */}
 							<div>
-								<h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+								<h3 className='text-lg font-semibold text-[var(--foreground)] mb-4'>
 									Настройки
 								</h3>
 
-								<div className='space-y-3'>
-									<button className='w-full flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors'>
+								<div className='space-y-4'>
+									<button className='w-full flex items-center justify-between py-3 px-4 bg-[var(--button-bg)] hover:bg-[var(--button-hover)] rounded-lg transition-colors'>
 										<div className='flex items-center space-x-3'>
 											<span className='text-lg'>🔔</span>
-											<span className='text-sm font-medium text-gray-900 dark:text-white'>
+											<span className='text-sm font-medium text-[var(--foreground)]'>
 												Уведомления
 											</span>
 										</div>
-										<span className='text-sm text-gray-500 dark:text-gray-400'>
-											→
-										</span>
+										<span className='text-sm text-[var(--button-text)]'>→</span>
 									</button>
 
-									<button className='w-full flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors'>
+									<button
+										onClick={toggleTheme}
+										className='w-full flex items-center justify-between py-3 px-4 bg-[var(--button-bg)] hover:bg-[var(--button-hover)] rounded-lg transition-colors'
+									>
 										<div className='flex items-center space-x-3'>
-											<span className='text-lg'>🌙</span>
-											<span className='text-sm font-medium text-gray-900 dark:text-white'>
-												Тёмная тема
+											<span className='text-lg'>
+												{mounted && theme === 'dark' ? '🌙' : '☀️'}
+											</span>
+											<span className='text-sm font-medium text-[var(--foreground)]'>
+												{mounted && theme === 'dark'
+													? 'Тёмная тема'
+													: 'Светлая тема'}
 											</span>
 										</div>
-										<span className='text-sm text-gray-500 dark:text-gray-400'>
-											→
-										</span>
-									</button>
-
-									<button className='w-full flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors'>
-										<div className='flex items-center space-x-3'>
-											<span className='text-lg'>🔐</span>
-											<span className='text-sm font-medium text-gray-900 dark:text-white'>
-												Приватность
-											</span>
-										</div>
-										<span className='text-sm text-gray-500 dark:text-gray-400'>
-											→
+										<span className='text-sm text-[var(--button-text)]'>
+											{mounted && theme === 'dark' ? '→' : '←'}
 										</span>
 									</button>
 								</div>
 							</div>
 
 							{/* Logout Button */}
-							<div className='pt-6 border-t border-gray-200 dark:border-gray-700'>
+							<div className='pt-6 border-t border-[var(--card-border)]'>
 								<button
 									onClick={() => logoutUser()}
 									className='w-full flex items-center justify-center space-x-2 py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors'
